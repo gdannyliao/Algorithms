@@ -2,6 +2,7 @@ import com.danny.algorithms.bit.Print1ToN;
 import com.danny.algorithms.sort.SelectionSort;
 import com.danny.algorithms.sort.Sort;
 
+import com.danny.algorithms.string.IPStringToInt;
 import edu.princeton.cs.algs4.Counter;
 import edu.princeton.cs.algs4.Interval1D;
 import edu.princeton.cs.algs4.Interval2D;
@@ -16,7 +17,7 @@ public class Launcher {
 //		Try.test();
 //		AccrossAccess.test();
 //		VariableTest.test();
-//		IPStringToInt.test();
+        IPStringToInt.test();
 //		LargestIncreasingSubArrayLength.test();
 //		new Leaf();
 //		LongestCommonSubsequence.test();

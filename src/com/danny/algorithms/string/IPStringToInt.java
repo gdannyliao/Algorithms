@@ -128,12 +128,12 @@ public class IPStringToInt {
 	public static void printIsCorrect(String ip) {
 		System.out.println("is ip " + ip + " correct:" + IPStringToInt.isCorrectIp(ip));
 	}
-	
 	public static void test() {
 		String ip = "19.2.3";
 		printIsCorrect(null);
 		printIsCorrect("");
 		printIsCorrect(ip);
+        printIsCorrect("001.2.003.04");
 		printIsCorrect(".2.3.4");
 		printIsCorrect("1111.2.3.4");
 		printIsCorrect("256.2.2.0");
