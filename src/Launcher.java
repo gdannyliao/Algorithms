@@ -1,14 +1,12 @@
-import com.danny.algorithms.bit.Print1ToN;
-import com.danny.algorithms.sort.SelectionSort;
-import com.danny.algorithms.sort.Sort;
+import com.ggdsn.algorithms.bit.Print1ToN;
+import com.ggdsn.algorithms.sort.SelectionSort;
+import com.ggdsn.algorithms.sort.Sort;
 
-import com.danny.algorithms.string.IPStringToInt;
+import com.ggdsn.algorithms.string.IPStringToInt;
 import edu.princeton.cs.algs4.Counter;
 import edu.princeton.cs.algs4.Interval1D;
 import edu.princeton.cs.algs4.Interval2D;
 import edu.princeton.cs.algs4.Point2D;
-import edu.princeton.cs.introcs.StdDraw;
-import edu.princeton.cs.introcs.StdOut;
 
 public class Launcher {
 
@@ -60,13 +58,4 @@ public class Launcher {
 		StdOut.println(box.area());
 	}
 
-}
-
-class View {
-	int i = 0;
-
-	void newView(View v) {
-		v = new View();
-		v.i = 1;
-	}
 }
