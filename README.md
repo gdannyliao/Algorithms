@@ -1,0 +1,5 @@
+# algorithms
+本工程是Java工程，有一些类会依赖alg4的StdIn等文件，需要引入alg4.jar和stdlib.jar
+以idea为例，我在根目录中创建lib文件夹，并把上述两个jar包放在lib中，然后在idea的设置中添加这两个的依赖
+
+另外可能需要用到测试数据集，在运行Alg4类的时候添加文件名参数，系统会去data/algs4-data/文件夹中查找相应的文件
