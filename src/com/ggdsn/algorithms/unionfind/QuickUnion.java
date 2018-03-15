@@ -10,25 +10,26 @@ public class QuickUnion implements UnionFind {
     public QuickUnion(int n) {
         id = new int[n];
         weight = new int[n];
-        for (int i: id) {
+        for (int i = 0; i < n; i++) {
             id[i] = i;
             weight[i] = 1;
         }
     }
+
     @Override
     public void union(int p, int q) {
-       int rootP = find(p);
-       int rootQ = find(q);
-       int weightP = weight[rootP];
-       int weightQ = weight[rootQ];
-       if (rootP == rootQ) return;
-       if (weightP > weightQ) {
+        int rootP = find(p);
+        int rootQ = find(q);
+        int weightP = weight[rootP];
+        int weightQ = weight[rootQ];
+        if (rootP == rootQ) return;
+        if (weightP > weightQ) {
             id[rootQ] = rootP;
             weight[rootP] += weightQ;
-       } else {
+        } else {
             id[rootP] = rootQ;
             weight[rootQ] += weightP;
-       }
+        }
     }
 
     @Override
