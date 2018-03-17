@@ -20,10 +20,11 @@ public class QuickUnion implements UnionFind {
     public void union(int p, int q) {
         int rootP = find(p);
         int rootQ = find(q);
+        if (rootP == rootQ) return;
         int weightP = weight[rootP];
         int weightQ = weight[rootQ];
-        if (rootP == rootQ) return;
         if (weightP > weightQ) {
+            //将较小的树并入较大的树，以免整棵树过高。
             id[rootQ] = rootP;
             weight[rootP] += weightQ;
         } else {
