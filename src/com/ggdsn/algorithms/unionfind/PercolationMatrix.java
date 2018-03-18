@@ -1,3 +1,7 @@
+package com.ggdsn.algorithms.unionfind;
+
+import edu.princeton.cs.algs4.In;
+
 import java.io.File;
 import java.util.Arrays;
 import java.util.Objects;
