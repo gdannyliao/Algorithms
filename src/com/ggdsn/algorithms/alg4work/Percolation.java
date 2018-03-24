@@ -1,3 +1,6 @@
+package com.ggdsn.algorithms.alg4work;
+
+import edu.princeton.cs.algs4.In;
 import edu.princeton.cs.algs4.WeightedQuickUnionUF;
 
 import java.io.File;

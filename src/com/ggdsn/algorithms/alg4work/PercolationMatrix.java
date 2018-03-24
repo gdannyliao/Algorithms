@@ -1,4 +1,4 @@
-package com.ggdsn.algorithms.unionfind;
+package com.ggdsn.algorithms.alg4work;
 
 import edu.princeton.cs.algs4.In;
 

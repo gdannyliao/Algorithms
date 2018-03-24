@@ -1,4 +1,8 @@
+package com.ggdsn.algorithms.alg4work;
+
 import com.ggdsn.algorithms.unionfind.*;
+import edu.princeton.cs.algs4.StdIn;
+import edu.princeton.cs.algs4.StdOut;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
