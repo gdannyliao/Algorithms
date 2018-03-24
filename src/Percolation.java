@@ -1,4 +1,3 @@
-import edu.princeton.cs.algs4.In;
 import edu.princeton.cs.algs4.WeightedQuickUnionUF;
 
 import java.io.File;
@@ -6,46 +5,57 @@ import java.util.Arrays;
 
 public class Percolation {
     private WeightedQuickUnionUF uf;
-    private boolean[] states;
+    private boolean[] openStates;
     private int n;
     private int openCount;
+    private int virtualTopIdx = 0;
+    private int virtualBottomIdx;
 
     public Percolation(int n) {
+        if (n < 1) throw new IllegalArgumentException("n is illegal");
         this.n = n;
-        uf = new WeightedQuickUnionUF(n * n);
-        states = new boolean[n * n];
+        int size = n * n + 2;
+        virtualBottomIdx = size - 1;
+        uf = new WeightedQuickUnionUF(size);
+        openStates = new boolean[size];
+        openStates[virtualTopIdx] = true;
+        openStates[virtualBottomIdx] = true;
+        //2018.3.18 FIXME  我觉得首尾两个虚拟点的方式还是有问题，假如有一个权重比较小的路径是连通的，但有一个权重比较大的路径是不连通的，那虚拟点肯定会连接到权重大的路径上去
     }            // create n-by-n grid, with all sites blocked
 
-    int toIndex(int row, int col) {
-        return (row - 1) * n + col - 1;
+    private int toIndex(int row, int col) {
+        int idx = (row - 1) * n + col;
+        if (idx < virtualTopIdx) idx = virtualTopIdx;
+        if (idx > virtualBottomIdx) idx = virtualBottomIdx;
+        return idx;
     }
 
-    private boolean isInMatrix(int i) {
-        return i >= 0 && i < n * n;
+    private boolean inMatrix(int row, int col) {
+        return 1 <= row && row <= n && 1 <= col && col <= n;
     }
 
     public void open(int row, int col) {
+        if (!inMatrix(row, col)) throw new IllegalArgumentException();
         int i = toIndex(row, col);
-        if (!isInMatrix(i)) return;
-        if (states[i]) return;
-        states[i] = true;
+        if (openStates[i]) return;
+        openStates[i] = true;
         openCount++;
 
         int top = toIndex(row - 1, col);
-        if (isInMatrix(top) && states[top]) {
+        if (openStates[top]) {
             uf.union(top, i);
         }
 
 
         int bottom = toIndex(row + 1, col);
-        if (isInMatrix(bottom) && states[bottom]) {
+        if (openStates[bottom]) {
             uf.union(i, bottom);
         }
 
         //由于uf是连续的一维数组，在左边界如果执行union会导致连接到了右上一格
         if (col != 1) {
             int left = toIndex(row, col - 1);
-            if (isInMatrix(left) && states[left]) {
+            if (openStates[left]) {
                 uf.union(left, i);
             }
         }
@@ -53,26 +63,22 @@ public class Percolation {
         //右边界同理
         if (col != n) {
             int right = toIndex(row, col + 1);
-            if (isInMatrix(right) && states[right]) {
+            if (openStates[right]) {
                 uf.union(i, right);
             }
         }
     }  // open site (row, col) if it is not open already
 
     public boolean isOpen(int row, int col) {
+        if (!inMatrix(row, col)) throw new IllegalArgumentException();
         int i = toIndex(row, col);
-        return isInMatrix(i) && states[i];
+        return openStates[i];
     } // is site (row, col) open?
 
     public boolean isFull(int row, int col) {
+        if (!inMatrix(row, col)) throw new IllegalArgumentException();
         int i = toIndex(row, col);
-        if (!isInMatrix(i)) return false;
-        if (!states[i]) return false;
-        for (int j = 1; j <= n; j++) {
-            int topIndex = toIndex(1, j);
-            if (states[topIndex] && uf.connected(topIndex, i)) return true;
-        }
-        return false;
+        return openStates[i] && uf.connected(i, virtualTopIdx);
     }  // is site (row, col) full?
 
     public int numberOfOpenSites() {
@@ -80,10 +86,7 @@ public class Percolation {
     }    // number of open sites
 
     public boolean percolates() {
-        for (int i = 1; i <= n; i++) {
-            if (isFull(n, i)) return true;
-        }
-        return false;
+        return uf.connected(virtualBottomIdx, virtualTopIdx);
     }             // does the system percolate?
 
     public static void main(String[] args) {
