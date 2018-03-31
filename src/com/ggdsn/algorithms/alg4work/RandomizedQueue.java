@@ -1,3 +1,5 @@
+package com.ggdsn.algorithms.alg4work;
+
 import edu.princeton.cs.algs4.StdRandom;
 
 import java.util.Iterator;
@@ -126,12 +128,4 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
             }
         };
     }         // return an independent iterator over items in random order
-
-    public static void print(Object[] array) {
-        System.out.print("print array = ");
-        for (Object o : array) {
-            System.out.print((o == null ? "_" : o) + " ");
-        }
-        System.out.println();
-    }
 }

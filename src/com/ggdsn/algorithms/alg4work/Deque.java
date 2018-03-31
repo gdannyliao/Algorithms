@@ -1,3 +1,5 @@
+package com.ggdsn.algorithms.alg4work;
+
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Random;
@@ -136,6 +138,7 @@ public class Deque<Item> implements Iterable<Item> {
                         Integer last = deque.removeLast();
                         System.out.println("remove last=" + last);
                     }
+                    break;
             }
         }
         for (int i : deque) {

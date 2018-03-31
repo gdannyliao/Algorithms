@@ -1,3 +1,5 @@
+package com.ggdsn.algorithms.alg4work;
+
 import java.util.Random;
 
 public class RandomizedQueueTest {
