@@ -5,6 +5,10 @@ import edu.princeton.cs.algs4.StdRandom;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
+/**
+ * 这里实现了一个可伸缩的列表，当列表塞满的时候扩展一倍。当列表只剩下1/4的时候缩小一半。当插入指针insertIdx达到列表长度的时候执行调整
+ * @param <Item>
+ */
 public class RandomizedQueue<Item> implements Iterable<Item> {
     private static final int MIN_SIZE = 8;
     @SuppressWarnings("unchecked")

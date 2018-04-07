@@ -4,13 +4,14 @@ import com.ggdsn.algorithms.unionfind.*;
 import edu.princeton.cs.algs4.StdIn;
 import edu.princeton.cs.algs4.StdOut;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 
 public class Alg4 {
     public static void main(String[] args) {
         try {
-            FileInputStream input = new FileInputStream("data/algs4-data/" + args[0]);
+            FileInputStream input = new FileInputStream(DATA_DIR + File.pathSeparator + args[0]);
             System.setIn(input);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -28,4 +29,6 @@ public class Alg4 {
             }
         }
     }
+
+    public static final String DATA_DIR = "data/algs4-data";
 }
