@@ -49,7 +49,7 @@ public class Tree<T extends Comparable> {
 	public boolean hasRight() {
 		return right != null;
 	}
-	
+
 	public void setLeft(Tree<T> left) {
 		this.left = left;
 	}

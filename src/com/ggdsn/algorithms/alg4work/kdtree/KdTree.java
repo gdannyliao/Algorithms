@@ -151,8 +151,7 @@ public class KdTree {
     private Point2D target;
 
     /**
-     * 当点不在方块内的时候，根据点和方块（范围）之间的距离做判断。距离越大的方块越不用理会。
-     * 当点在方块内的时候（点和方块之间的欧几里得距离为0），则需要判断分割线两边都是否有距离更近的点
+     * 情况1：整体被分为两半，目标点处于其中一边时。比较目标点所在区域内的最近距离M和目标点与另一边之间的距离N。如果M比N要大，另外一边可能有更近的点
      */
     private void findNearest(Node node, double left, double top, double right, double bottom) {
         if (node == null) return;
