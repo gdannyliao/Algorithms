@@ -4,16 +4,19 @@ class TwoThreeTree<T : Comparable<T>> {
     private var root: Node<T>? = null
 
     fun insert(value: T) {
-        root = insert(value, root)
-        rtValue?.let {
-            val newRoot = Node2(it.first)
-            newRoot.left = it.second
-            newRoot.right = it.third
-            rtValue = null
+        val rt = insert(value, root)
+        if (rt is Node4) {
+            val divide = divide(rt)
+            val newRoot = Node2(divide.first)
+            newRoot.left = divide.second
+            newRoot.right = divide.third
             root = newRoot
-        }
+        } else root = rt
     }
 
+    /**
+     * 插入一个值并返回它插入的节点。有可能返回的是4节点，此时需要调用者对这个4节点做分割
+     */
     private fun insert(value: T, node: Node<T>?): Node<T> {
         if (node == null) return Node2(value)
 
@@ -24,15 +27,15 @@ class TwoThreeTree<T : Comparable<T>> {
                         if (node.left == null) {
                             return Node3(value, node.value)
                         } else {
-                            node.left = insert(value, node.left)
-                            rtValue?.let {
-                                val newNode = Node3(it.first, node.value)
-                                newNode.left = it.second
-                                newNode.mid = it.third
+                            val rt = insert(value, node.left)
+                            if (rt is Node4) {
+                                val divide = divide(rt)
+                                val newNode = Node3(divide.first, node.value)
+                                newNode.left = divide.second
+                                newNode.mid = divide.third
                                 newNode.right = node.right
-                                rtValue = null
                                 return newNode
-                            }
+                            } else node.left = rt
                         }
                     }
                     value == node.value -> return node
@@ -40,15 +43,15 @@ class TwoThreeTree<T : Comparable<T>> {
                         if (node.right == null) {
                             return Node3(node.value, value)
                         } else {
-                            node.right = insert(value, node.right)
-                            rtValue?.let {
-                                val newNode = Node3(node.value, it.first)
+                            val rt = insert(value, node.right)
+                            if (rt is Node4) {
+                                val divide = divide(rt)
+                                val newNode = Node3(node.value, divide.first)
                                 newNode.left = node.left
-                                newNode.mid = it.second
-                                newNode.right = it.third
-                                rtValue = null
+                                newNode.mid = divide.second
+                                newNode.right = divide.third
                                 return newNode
-                            }
+                            } else node.right = rt
                         }
                     }
                 }
@@ -57,60 +60,44 @@ class TwoThreeTree<T : Comparable<T>> {
                 when {
                     value < node.smaller -> {
                         if (node.left == null) {
-                            val ret = divide(toNode4(node, value, node.smaller, node.bigger, 0))
-                            rtValue = ret
-                            return ret.second
+                            return toNode4(LEFT, node, value, node.smaller, node.bigger)
                         } else {
                             val newLeft = insert(value, node.left)
-                            val rt = rtValue
-                            if (rt == null) {
-                                node.left = newLeft
-                            } else {
-                                val node4 = toNode4(node, rt.first, node.smaller, node.bigger, 0)
-                                node4.left = rt.second
-                                node4.midLeft = rt.third
-                                val ret = divide(node4)
-                                rtValue = ret
-                                return ret.second
-                            }
+                            if (newLeft is Node4) {
+                                val divide = divide(newLeft)
+                                val node4 = toNode4(LEFT, node, divide.first, node.smaller, node.bigger)
+                                node4.left = divide.second
+                                node4.midLeft = divide.third
+                                return node4
+                            } else node.left = newLeft
                         }
                     }
                     value > node.smaller && value < node.bigger -> {
                         if (node.mid == null) {
-                            val ret = divide(toNode4(node, node.smaller, value, node.bigger, 1))
-                            rtValue = ret
-                            return ret.second
+                            return toNode4(MID, node, node.smaller, value, node.bigger)
                         } else {
                             val newMid = insert(value, node.mid)
-                            val rt = rtValue
-                            if (rt == null) node.mid = newMid
-                            else {
-                                val node4 = toNode4(node, node.smaller, rt.first, node.bigger, 1)
-                                node4.midLeft = rt.second
-                                node4.midRight = rt.third
-                                val ret = divide(node4)
-                                rtValue = ret
-                                return ret.second
-                            }
+                            if (newMid is Node4) {
+                                val divide = divide(newMid)
+                                val node4 = toNode4(MID, node, node.smaller, divide.first, node.bigger)
+                                node4.midLeft = divide.second
+                                node4.midRight = divide.third
+                                return node4
+                            } else node.mid = newMid
                         }
                     }
                     value > node.bigger -> {
                         if (node.right == null) {
-                            val ret = divide(toNode4(node, node.smaller, node.bigger, value, 2))
-                            rtValue = ret
-                            return ret.second
+                            return toNode4(RIGHT, node, node.smaller, node.bigger, value)
                         } else {
-                            val newRight =  insert(value, node.right)
-                            val rt = rtValue
-                            if (rt == null) node.right = newRight
-                            else {
-                                val node4 = toNode4(node, node.smaller, node.bigger, rt.first, 2)
-                                node4.midRight = rt.second
-                                node4.right = rt.third
-                                val ret = divide(node4)
-                                rtValue = ret
-                                return ret.second
-                            }
+                            val newRight = insert(value, node.right)
+                            if (newRight is Node4) {
+                                val divide = divide(newRight)
+                                val node4 = toNode4(RIGHT, node, node.smaller, node.bigger, divide.first)
+                                node4.midRight = divide.second
+                                node4.right = divide.third
+                                return node4
+                            } else node.right = newRight
                         }
                     }
                     else -> return node
@@ -119,8 +106,6 @@ class TwoThreeTree<T : Comparable<T>> {
         }
         return node
     }
-
-    private var rtValue: Triple<T, Node<T>, Node<T>>? = null
 
     private fun divide(node: Node4<T>): Triple<T, Node<T>, Node<T>> {
         val nodeLeft = Node2(node.smaller)
@@ -133,9 +118,9 @@ class TwoThreeTree<T : Comparable<T>> {
         return Triple<T, Node<T>, Node<T>>(node.center, nodeLeft, nodeRight)
     }
 
-    private fun toNode4(node3: Node3<T>, smaller: T, center: T, bigger: T, from: Int): Node4<T> {
+    private fun toNode4(from: Int, node3: Node3<T>, smaller: T, center: T, bigger: T): Node4<T> {
         return when (from) {
-            0 -> {
+            LEFT -> {
                 //左边的值更新
                 val node4 = Node4(smaller, center, bigger)
                 node4.midLeft = node3.left
@@ -143,7 +128,7 @@ class TwoThreeTree<T : Comparable<T>> {
                 node4.right = node3.right
                 node4
             }
-            1 -> {
+            MID -> {
                 //中间的值更新
                 val node4 = Node4(smaller, center, bigger)
                 node4.left = node3.left
@@ -157,7 +142,7 @@ class TwoThreeTree<T : Comparable<T>> {
                 }
                 node4
             }
-            2 -> {
+            RIGHT -> {
                 val node4 = Node4(smaller, center, bigger)
                 node4.left = node3.left
                 node4.midLeft = node3.mid
@@ -180,6 +165,12 @@ class TwoThreeTree<T : Comparable<T>> {
         sb.append(node.toString())
         for (i in 0 until node.childCount())
             print(sb, node.childAt(i))
+    }
+
+    companion object {
+        const val LEFT = 0
+        const val MID = 1
+        const val RIGHT = 2
     }
 }
 
