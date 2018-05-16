@@ -5,13 +5,10 @@ class TwoThreeTree<T : Comparable<T>> {
 
     fun insert(value: T) {
         val rt = insert(value, root)
-        if (rt is Node4) {
+        root = if (rt is Node4) {
             val divide = divide(rt)
-            val newRoot = Node2(divide.first)
-            newRoot.left = divide.second
-            newRoot.right = divide.third
-            root = newRoot
-        } else root = rt
+            Node2(divide.first, divide.second, divide.third)
+        } else rt
     }
 
     /**
@@ -30,11 +27,7 @@ class TwoThreeTree<T : Comparable<T>> {
                             val rt = insert(value, node.left)
                             if (rt is Node4) {
                                 val divide = divide(rt)
-                                val newNode = Node3(divide.first, node.value)
-                                newNode.left = divide.second
-                                newNode.mid = divide.third
-                                newNode.right = node.right
-                                return newNode
+                                return Node3(divide.first, node.value, divide.second, divide.third, node.right)
                             } else node.left = rt
                         }
                     }
@@ -46,11 +39,7 @@ class TwoThreeTree<T : Comparable<T>> {
                             val rt = insert(value, node.right)
                             if (rt is Node4) {
                                 val divide = divide(rt)
-                                val newNode = Node3(node.value, divide.first)
-                                newNode.left = node.left
-                                newNode.mid = divide.second
-                                newNode.right = divide.third
-                                return newNode
+                                return Node3(node.value, divide.first, node.left, divide.second, divide.third)
                             } else node.right = rt
                         }
                     }
@@ -60,43 +49,34 @@ class TwoThreeTree<T : Comparable<T>> {
                 when {
                     value < node.smaller -> {
                         if (node.left == null) {
-                            return toNode4(LEFT, node, value, node.smaller, node.bigger)
+                            return Node4(value, node.smaller, node.bigger)
                         } else {
                             val newLeft = insert(value, node.left)
                             if (newLeft is Node4) {
                                 val divide = divide(newLeft)
-                                val node4 = toNode4(LEFT, node, divide.first, node.smaller, node.bigger)
-                                node4.left = divide.second
-                                node4.midLeft = divide.third
-                                return node4
+                                return Node4(divide.first, node.smaller, node.bigger, divide.second, divide.third, node.mid, node.right)
                             } else node.left = newLeft
                         }
                     }
                     value > node.smaller && value < node.bigger -> {
                         if (node.mid == null) {
-                            return toNode4(MID, node, node.smaller, value, node.bigger)
+                            return Node4(node.smaller, value, node.bigger)
                         } else {
                             val newMid = insert(value, node.mid)
                             if (newMid is Node4) {
                                 val divide = divide(newMid)
-                                val node4 = toNode4(MID, node, node.smaller, divide.first, node.bigger)
-                                node4.midLeft = divide.second
-                                node4.midRight = divide.third
-                                return node4
+                                return Node4(node.smaller, divide.first, node.bigger, node.left, divide.second, divide.third, node.right)
                             } else node.mid = newMid
                         }
                     }
                     value > node.bigger -> {
                         if (node.right == null) {
-                            return toNode4(RIGHT, node, node.smaller, node.bigger, value)
+                            return Node4(node.smaller, node.bigger, value)
                         } else {
                             val newRight = insert(value, node.right)
                             if (newRight is Node4) {
                                 val divide = divide(newRight)
-                                val node4 = toNode4(RIGHT, node, node.smaller, node.bigger, divide.first)
-                                node4.midRight = divide.second
-                                node4.right = divide.third
-                                return node4
+                                return Node4(node.smaller, node.bigger, divide.first, node.left, node.mid, divide.second, divide.third)
                             } else node.right = newRight
                         }
                     }
@@ -118,41 +98,6 @@ class TwoThreeTree<T : Comparable<T>> {
         return Triple<T, Node<T>, Node<T>>(node.center, nodeLeft, nodeRight)
     }
 
-    private fun toNode4(from: Int, node3: Node3<T>, smaller: T, center: T, bigger: T): Node4<T> {
-        return when (from) {
-            LEFT -> {
-                //左边的值更新
-                val node4 = Node4(smaller, center, bigger)
-                node4.midLeft = node3.left
-                node4.midRight = node3.mid
-                node4.right = node3.right
-                node4
-            }
-            MID -> {
-                //中间的值更新
-                val node4 = Node4(smaller, center, bigger)
-                node4.left = node3.left
-                node4.right = node3.right
-                val mid = node3.mid
-                if (mid != null) {
-                    val midVal = mid.valueAt(0)!!
-                    if (midVal > center)
-                        node4.midRight = mid
-                    else node4.midLeft = mid
-                }
-                node4
-            }
-            RIGHT -> {
-                val node4 = Node4(smaller, center, bigger)
-                node4.left = node3.left
-                node4.midLeft = node3.mid
-                node4.midRight = node3.right
-                node4
-            }
-            else -> throw IllegalStateException()
-        }
-    }
-
     override fun toString(): String {
         val str = StringBuilder("[")
         print(str, root)
@@ -166,12 +111,6 @@ class TwoThreeTree<T : Comparable<T>> {
         for (i in 0 until node.childCount())
             print(sb, node.childAt(i))
     }
-
-    companion object {
-        const val LEFT = 0
-        const val MID = 1
-        const val RIGHT = 2
-    }
 }
 
 interface Node<T> {
@@ -180,9 +119,7 @@ interface Node<T> {
     fun childCount(): Int
 }
 
-class Node2<T>(var value: T) : Node<T> {
-    var left: Node<T>? = null
-    var right: Node<T>? = null
+class Node2<T>(var value: T, var left: Node<T>? = null, var right: Node<T>? = null) : Node<T> {
 
     override fun valueAt(idx: Int): T? = if (idx == 0) value else throw IndexOutOfBoundsException()
 
@@ -201,10 +138,7 @@ class Node2<T>(var value: T) : Node<T> {
     }
 }
 
-class Node3<T>(var smaller: T, var bigger: T) : Node<T> {
-    var left: Node<T>? = null
-    var mid: Node<T>? = null
-    var right: Node<T>? = null
+class Node3<T>(var smaller: T, var bigger: T, var left: Node<T>? = null, var mid: Node<T>? = null, var right: Node<T>? = null) : Node<T> {
 
     override fun valueAt(idx: Int): T? = when (idx) {
         0 -> smaller
@@ -228,11 +162,7 @@ class Node3<T>(var smaller: T, var bigger: T) : Node<T> {
     }
 }
 
-class Node4<T>(var smaller: T, var center: T, var bigger: T) : Node<T> {
-    var left: Node<T>? = null
-    var midLeft: Node<T>? = null
-    var midRight: Node<T>? = null
-    var right: Node<T>? = null
+class Node4<T>(var smaller: T, var center: T, var bigger: T, var left: Node<T>? = null, var midLeft: Node<T>? = null, var midRight: Node<T>? = null, var right: Node<T>? = null) : Node<T> {
 
     override fun valueAt(idx: Int): T? = when (idx) {
         0 -> smaller
