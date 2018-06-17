@@ -3,19 +3,19 @@ package com.ggdsn.algorithms.tree.redblacktree
 import kotlin.test.assertTrue
 
 fun main(args: Array<String>) {
-    testRootDivide()
-    testFatherIs2NodeInsertLeft()
-    testFatherIs2NodeInsertRight()
-    testFatherIs3NodeInsertLeft()
-    testFatherIs3NodeInsertMid()
-    testFatherIs3NodeInsertRight()
+    val tree = RedBlackTree<Char>()
+    testRootDivide(tree)
+    testFatherIs2NodeInsertLeft(tree)
+    testFatherIs2NodeInsertRight(tree)
+    testFatherIs3NodeInsertLeft(tree)
+    testFatherIs3NodeInsertMid(tree)
+    testFatherIs3NodeInsertRight(tree)
 }
 
 /**
  * 测试根节点分裂
  */
-fun testRootDivide() {
-    val tree = TwoThreeTree<Char>()
+fun testRootDivide(tree: Tree<Char>) {
     tree.insert('a')
     tree.insert('c')
     tree.insert('b')
@@ -25,8 +25,7 @@ fun testRootDivide() {
 /**
  * 父节点是2节点，左侧插入
  */
-fun testFatherIs2NodeInsertLeft() {
-    val tree = TwoThreeTree<Char>()
+fun testFatherIs2NodeInsertLeft(tree: Tree<Char>) {
     tree.insert('f')
     tree.insert('e')
     tree.insert('a')
@@ -35,8 +34,7 @@ fun testFatherIs2NodeInsertLeft() {
     assertTrue { tree.toString() == "[[b,e][a][c][f]]" }
 }
 
-fun testFatherIs2NodeInsertRight() {
-    val tree = TwoThreeTree<Char>()
+fun testFatherIs2NodeInsertRight(tree: Tree<Char>) {
     tree.insert('f')
     tree.insert('e')
     tree.insert('a')
@@ -45,8 +43,7 @@ fun testFatherIs2NodeInsertRight() {
     assertTrue { tree.toString() == "[[e,g][a][f][h]]" }
 }
 
-fun testFatherIs3NodeInsertLeft() {
-    val tree = TwoThreeTree<Char>()
+fun testFatherIs3NodeInsertLeft(tree: Tree<Char>) {
     tree.insert('i')
     tree.insert('k')
     tree.insert('g')
@@ -57,8 +54,7 @@ fun testFatherIs3NodeInsertLeft() {
     assertTrue { tree.toString() == "[[e][b][a][c][i][g][k]]" }
 }
 
-fun testFatherIs3NodeInsertMid() {
-    val tree = TwoThreeTree<Char>()
+fun testFatherIs3NodeInsertMid(tree: Tree<Char>) {
     tree.insert('i')
     tree.insert('k')
     tree.insert('g')
@@ -69,8 +65,7 @@ fun testFatherIs3NodeInsertMid() {
     assertTrue { tree.toString() == "[[g][e][c][f][i][h][k]]" }
 }
 
-fun testFatherIs3NodeInsertRight() {
-    val tree = TwoThreeTree<Char>()
+fun testFatherIs3NodeInsertRight(tree: Tree<Char>) {
     tree.insert('i')
     tree.insert('k')
     tree.insert('g')

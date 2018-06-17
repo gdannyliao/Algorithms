@@ -1,9 +1,9 @@
 package com.ggdsn.algorithms.tree.redblacktree
 
-class TwoThreeTree<T : Comparable<T>> {
+class TwoThreeTree<T : Comparable<T>> : Tree<T> {
     private var root: Node<T>? = null
 
-    fun insert(value: T) {
+    override fun insert(value: T) {
         val rt = insert(value, root)
         root = if (rt is Node4) {
             val divide = divide(rt)
