@@ -53,11 +53,12 @@ public class SAP {
 
     private void calDistance(Integer a, Integer b, Map<Integer, Integer> path, int distance) {
         //由于不保证是无环图，所以如何即保证遍历，又不重复？
-        //TODO 解决环的问题
         Iterable<Integer> adj = graph.adj(a);
-        path.put(a, distance++);
-        if (!adj.iterator().hasNext()) {
-            findCross(b, path, 0);
+        boolean alreadyWalked = path.containsKey(a);
+        if (!alreadyWalked)
+            path.put(a, distance++);
+        if (!adj.iterator().hasNext() || alreadyWalked) {
+            findCross(b, new HashMap<>(), path, 0);
         } else {
             for (Integer next : adj) {
                 calDistance(next, b, path, distance);
@@ -76,19 +77,23 @@ public class SAP {
         sca = -1;
     }
 
-    private void findCross(Integer v, Map<Integer, Integer> path, int distance) {
-        if (path.containsKey(v)) {
+    private void findCross(Integer v, Map<Integer, Integer> myPath, Map<Integer, Integer> otherPath, int distance) {
+        if (myPath.containsKey(v))
+            return;
+        myPath.put(v, distance);
+        if (otherPath.containsKey(v)) {
             isSet = true;
-            int dis = path.get(v) + distance;
+            int dis = otherPath.get(v) + distance;
             if (dis < minDistance) {
                 minDistance = dis;
                 sca = v;
             }
-            return;
+        } else {
+            for (Integer i : graph.adj(v)) {
+                findCross(i, myPath, otherPath, distance + 1);
+            }
         }
-        for (Integer i : graph.adj(v)) {
-            findCross(i, path, distance + 1);
-        }
+        myPath.remove(v);
     }
 
     // do unit testing of this class
