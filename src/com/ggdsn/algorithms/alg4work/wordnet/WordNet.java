@@ -70,48 +70,52 @@ public class WordNet {
         List<Integer> idB = wordInt.get(nounB);
         if (idB == null) throw new IllegalArgumentException("nounB is not noun");
 
-        int minDis = Integer.MAX_VALUE;
+        minDistance = Integer.MAX_VALUE;
+        isSet = false;
         for (Integer i : idA) {
             for (Integer j : idB) {
-                int d = calDistance(i, j, new HashMap<>(), 0);
-                if (d > -1 && d < minDis)
-                    minDis = d;
+                calDistance(i, j, new HashMap<>(), 0);
             }
         }
-        return minDis;
+        if (isSet) return minDistance;
+        else return -1;
     }
+
+    private int minDistance = Integer.MAX_VALUE;
+    private boolean isSet = false;
+    private int sca;
 
     /**
      * 如果两者不存在联系，则返回-1
      */
-    private int calDistance(Integer a, Integer b, Map<Integer, Integer> path, int distance) {
+    private void calDistance(Integer a, Integer b, Map<Integer, Integer> path, int distance) {
         Word word = intWord.get(a);
-        if (word == null) return -1;
+        if (word == null) return;
         path.put(a, distance++);
         if (word.ancestors.isEmpty()) {
-            return findCross(b, path, 0);
+            findCross(b, path, 0);
         } else {
-            int minDis = Integer.MAX_VALUE;
             for (Integer anc : word.ancestors) {
-                int d = calDistance(anc, b, path, distance);
-                if (d != -1 && d < minDis)
-                    minDis = d;
+                calDistance(anc, b, path, distance);
             }
-            return minDis;
         }
     }
 
-    private int findCross(Integer v, Map<Integer, Integer> otherPath, int distance) {
+    private void findCross(Integer v, Map<Integer, Integer> otherPath, int distance) {
         Word word = intWord.get(v);
-        if (word == null) return -1;
-        if (otherPath.containsKey(v)) return otherPath.get(v) + distance;
-        int minDis = Integer.MAX_VALUE;
-        for (Integer i : word.ancestors) {
-            int d = findCross(i, otherPath, distance + 1);
-            if (d != -1 && d < minDis)
-                minDis = d;
+        if (word == null) return;
+        if (otherPath.containsKey(v)) {
+            isSet = true;
+            int dis = otherPath.get(v) + distance;
+            if (dis < minDistance) {
+                minDistance = dis;
+                sca = v;
+            }
+            return;
         }
-        return minDis;
+        for (Integer i : word.ancestors) {
+            findCross(i, otherPath, distance + 1);
+        }
     }
 
     // a synset (second field of synsets.txt) that is the common ancestor of nounA and nounB
@@ -120,15 +124,33 @@ public class WordNet {
     /**
      * 最近公共祖先
      */
-//    public String sap(String nounA, String nounB) {
-//
-//    }
+    public String sap(String nounA, String nounB) {
+        List<Integer> idA = wordInt.get(nounA);
+        if (idA == null) throw new IllegalArgumentException("nounA is not noun");
+        List<Integer> idB = wordInt.get(nounB);
+        if (idB == null) throw new IllegalArgumentException("nounB is not noun");
+
+        minDistance = Integer.MAX_VALUE;
+        isSet = false;
+        for (Integer i : idA) {
+            for (Integer j : idB) {
+                calDistance(i, j, new HashMap<>(), 0);
+            }
+        }
+        if (isSet) {
+            Word word = intWord.get(sca);
+            if (word != null)
+                return word.getSynset();
+            else return null;
+        } else return null;
+    }
 
     // do unit testing of this class
     public static void main(String[] args) {
         String path = Alg4.DATA_DIR + File.separator + "wordnet" + File.separator;
         WordNet wordNet = new WordNet(path + args[0], path + args[1]);
         System.out.println("distance =" + wordNet.distance("Alpena", "houndstooth_check"));
+        System.out.println("synset=" + wordNet.sap("Alpena", "houndstooth_check"));
     }
 }
 
@@ -139,5 +161,15 @@ class Word {
 
     public Word(int id) {
         this.id = id;
+    }
+
+    public String getSynset() {
+        if (words.isEmpty()) return "";
+        StringBuilder sb = new StringBuilder();
+        for (String s : words) {
+            sb.append(s).append(' ');
+        }
+        sb.deleteCharAt(sb.length() - 1);
+        return sb.toString();
     }
 }
