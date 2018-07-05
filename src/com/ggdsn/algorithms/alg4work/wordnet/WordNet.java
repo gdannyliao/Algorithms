@@ -99,6 +99,7 @@ public class WordNet {
                 calDistance(anc, b, path, distance);
             }
         }
+        path.remove(a);
     }
 
     private void findCross(Integer v, Map<Integer, Integer> otherPath, int distance) {
