@@ -23,6 +23,7 @@ public class SAP {
     public int length(int v, int w) {
         init();
         calDistance(v, w, new HashMap<>(), 0);
+        calDistance(w, v, new HashMap<>(), 0);
         return isSet ? minDistance : -1;
     }
 
@@ -46,6 +47,7 @@ public class SAP {
         for (Integer n1 : v) {
             for (Integer n2 : w) {
                 calDistance(n1, n2, new HashMap<>(), 0);
+                calDistance(n2, n1, new HashMap<>(), 0);
             }
         }
         return isSet ? minDistance : -1;

@@ -15,6 +15,7 @@ public class Outcast {
 
     public String outcast(String[] nouns) {
         int minDis = Integer.MAX_VALUE;
+        //FIXME 2018/7/9 得到的结果全不对
         String minNoun = null;
         for (String noun : nouns) {
             int di = 0;
