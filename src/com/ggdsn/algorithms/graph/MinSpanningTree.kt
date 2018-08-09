@@ -11,11 +11,11 @@ interface MinSpanningTree {
     fun allWeight(): Double
 }
 
-class MinSpanningTreeImpl(private val graph: WeightGraph) : MinSpanningTree {
+class MinSpanningTreeDelay(private val graph: WeightGraph) : MinSpanningTree {
     private val marked = Array(graph.edgeCount(), { false })
     private val tree = mutableListOf<WeightEdge>()
     private val queue: PriorityQueue<WeightEdge> = PriorityQueue(Comparator<WeightEdge> { o1, o2 ->
-        return@Comparator Math.round(o1.weight * 100000 - o2.weight * 100000).toInt()
+        return@Comparator java.lang.Double.compare(o1.weight, o2.weight)
     })
 
     init {
@@ -54,7 +54,7 @@ class MinSpanningTreeImpl(private val graph: WeightGraph) : MinSpanningTree {
                 graph.addEdge(WeightEdge(scanner.nextInt(), scanner.nextInt(), scanner.nextDouble()))
             }
 
-            val mst = MinSpanningTreeImpl(graph)
+            val mst = MinSpanningTreeDelay(graph)
             for (t in mst.getEdges()) {
                 println(t)
             }
