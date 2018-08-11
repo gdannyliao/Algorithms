@@ -1,15 +1,12 @@
-package com.ggdsn.algorithms.graph
+package com.ggdsn.algorithms.graph.mst
 
 import com.ggdsn.algorithms.alg4work.Alg4
+import com.ggdsn.algorithms.graph.WeightEdge
+import com.ggdsn.algorithms.graph.WeightGraph
+import com.ggdsn.algorithms.graph.WeightGraphImpl
 import java.io.File
 import java.io.FileInputStream
 import java.util.*
-import kotlin.Comparator
-
-interface MinSpanningTree {
-    fun getEdges(): Iterable<WeightEdge>
-    fun allWeight(): Double
-}
 
 class MinSpanningTreeDelay(private val graph: WeightGraph) : MinSpanningTree {
     private val marked = Array(graph.edgeCount(), { false })
