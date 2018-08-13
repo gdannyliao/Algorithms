@@ -17,8 +17,9 @@ public class QuickFind implements UnionFind {
     public void union(int p, int q) {
         int rootP = id[p];
         int rootQ = id[q];
+        if (id[p] == id[q]) return;
         //将所有原本指向Q的节点指向P
-        for (int i : id) {
+        for (int i = 0; i < id.length; i++) {
             if (id[i] == rootQ)
                 id[i] = rootP;
         }
