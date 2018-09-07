@@ -31,4 +31,8 @@ public class Alg4 {
     }
 
     public static final String DATA_DIR = "data/algs4-data";
+
+    public static String getFile(String name) {
+        return Alg4.DATA_DIR + File.separator + name;
+    }
 }
