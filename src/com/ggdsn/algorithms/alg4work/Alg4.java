@@ -35,4 +35,8 @@ public class Alg4 {
     public static String getFile(String name) {
         return Alg4.DATA_DIR + File.separator + name;
     }
+
+    public static String getFile(String dirName, String fileName) {
+        return Alg4.DATA_DIR + File.separator + dirName + File.separator + fileName;
+    }
 }
